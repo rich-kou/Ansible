@@ -1,0 +1,18 @@
+---
+- name: setting user level open file limit = 1048576
+  copy:
+    src: limits.conf
+    dest: /etc/security/limits.conf
+    mode: 0644
+
+- name: sysctl
+  copy:
+    src: sysctl.conf
+    dest: /etc/sysctl.conf
+    mode: 0644
+
+- name: run sysctl
+  shell: "sysctl -p"
+
+- name: disable swap
+  shell: sed -i 's/\/swap.img/\#/swap.img/g' /etc/fstab

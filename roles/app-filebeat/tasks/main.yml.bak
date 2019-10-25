@@ -1,0 +1,25 @@
+---
+- name: "yum clean all"
+  shell: "yum clean all"
+
+- name:  "Install FileBeat Lastest"
+  yum:
+    name: filebeat
+    state: present
+
+- name: Enable System Module
+  shell: "/usr/bin/filebeat modules enable system"
+
+- name: Copy Filebeat Setting
+  copy:
+    src: filebeat.yml
+    dest: /etc/filebeat/filebeat.yml
+    mode: 0600
+    owner: root
+    group: root
+
+- name: "Filebeat Enable"
+  systemd:
+    name: filebeat
+    enabled: yes
+    state: restarted

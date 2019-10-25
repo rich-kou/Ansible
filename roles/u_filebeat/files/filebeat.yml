@@ -1,0 +1,23 @@
+# Filebeat inputs
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /var/log/*.log
+
+# Filebeat modules
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+# ElasticSearch template setting
+setup.template.settings:
+  index.number_of_shards: 3
+
+# Kibana
+setup.kibana:
+  host: "S5ELK01:5601"
+
+# ElasticSearch
+output.elasticsearch:
+  hosts: ["S5ELK01:9200" ]

@@ -1,0 +1,6 @@
+---
+- hosts: "{{ host }}"
+  roles:
+    - app-node-exporter
+    - app-filebeat
+    - linux-tuning-db

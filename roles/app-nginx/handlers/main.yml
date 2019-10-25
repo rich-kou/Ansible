@@ -1,0 +1,5 @@
+- name: copy nginx bin
+  copy:
+    src: /opt/nginx/modules/{{ nginx }}/objs/nginx
+    dest: /usr/sbin/nginx
+    remote_src: yes

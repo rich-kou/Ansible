@@ -1,0 +1,10 @@
+---
+- hosts: "{{ host }}"  
+  gather_facts: true
+#  tasks:
+#  - apt: name=openssl state=latest
+#    when: ansible_distribution == 'Ubuntu'
+#  - yum: name=openssl state=latest
+#   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+  roles:
+    - app-filebeat

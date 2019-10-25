@@ -1,0 +1,24 @@
+---
+- name: Copy Repo file
+  copy:
+    src: remi-php54.repo
+    dest: /etc/yum.repos.d/remi-php54.repo
+    mode: 0644
+
+- name: Run yum clean all
+  shell: "yum clean all"
+
+- name: Install PHP MariaDB Apache
+  yum:
+    name: 
+      - php
+      - php-gd
+      - php-common
+      - php-cli
+      - php-devel
+      - php-mysqlnd
+      - httpd
+      - mariadb-server
+      - mariadb-libs
+      - MySQL-python
+    state: present

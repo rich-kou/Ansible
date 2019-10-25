@@ -1,0 +1,22 @@
+---
+- name: unlock cron.daily
+  shell: chattr -i -R /etc/cron.*
+
+- name: copy logrotate
+  copy:
+    src: logrotate
+    dest: /etc/cron.daily/logrotate
+    owner: root
+    group: root
+    mode: 0700
+
+- name: del bootlog
+  file:
+    path: /etc/logrotate.d/bootlog
+    state: absent
+
+- name: run logrotate
+  shell: sh /etc/cron.daily/logrotate
+
+- name: lock cron.daily
+  shell: chattr +i -R /etc/cron.*

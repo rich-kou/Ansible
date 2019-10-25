@@ -1,0 +1,52 @@
+---
+- import_tasks: requirements.yml
+- import_tasks: modules.yml
+
+- name: COPY Configure
+  copy: 
+    src: configure.sh
+    dest: /opt/nginx/modules/{{ nginx }}/
+
+- name: Build NGINX when NGINX has been installed.
+  command: >
+    {{ item }}
+    chdir="/opt/nginx/modules/{{ nginx }}/"
+  #  creates=/etc/nginx/nginx.conf
+  ignore_errors: yes
+  with_items:
+    - make clean
+    - sh ./configure.sh
+    - make
+  #  - make install
+  #notify: copy nginx bin
+- name: Build NGINX without NGINX installed.
+  command: >
+    {{ item }}
+    chdir="/opt/nginx/modules/{{ nginx }}/"
+    creates=/etc/nginx/nginx.conf
+  with_items:
+    - make install
+
+- name: remove default files
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "/etc/nginx/fastcgi_params.default"
+    - "/etc/nginx/fastcgi.conf.default"
+    - "/etc/nginx/mime.types.default"
+    - "/etc/nginx/nginx.conf.default"
+    - "/etc/nginx/scgi_params.default"
+    - "/etc/nginx/uwsgi_params.default"
+
+- name: nginx as a service
+  copy:
+    src: nginx.service
+    dest: /etc/systemd/system/nginx.service
+
+- name: start and enable nginx
+  systemd:
+    name: nginx
+    daemon_reload: yes
+    enabled: yes
+    state: started

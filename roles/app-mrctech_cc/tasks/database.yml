@@ -1,0 +1,64 @@
+---
+- name: Check if root password is set
+  shell: >
+    mysqladmin -u root status
+  changed_when: false
+  failed_when: false
+  register: root_pwd_check
+
+- name: delete anonymous MySQL server user for {{ ansible_hostname }}
+  action: mysql_user user="" host="{{ ansible_hostname }}" state="absent"
+  when: root_pwd_check.rc == 0
+ 
+- name: delete anonymous MySQL server user for localhost
+  action: mysql_user user="" state="absent"
+  when: root_pwd_check.rc == 0
+ 
+- name: remove the MySQL test database
+  action: mysql_db db=test state=absent
+  when: root_pwd_check.rc == 0
+
+- name: Change root user password on first run
+  mysql_user: login_user=root
+              login_password=''
+              name=root
+              password=Ccna@123
+              priv=*.*:ALL,GRANT
+              host={{ item }}
+  with_items:
+    - "{{ ansible_hostname }}"
+    - 127.0.0.1
+    - ::1
+    - localhost
+  when: root_pwd_check.rc == 0
+
+- name: Create the users
+  mysql_user: name=cqcp
+              password=~!@#$%^&*
+              host={{ item }}
+              priv=*.*:ALL,GRANT
+              login_user=root
+              login_password=Ccna@123
+  with_items:
+    - "{{ ansible_hostname }}"
+    - 127.0.0.1
+    - ::1
+    - localhost
+
+- name: Copy SQL file
+  copy:
+    src: 20190416.sql
+    dest: /tmp/20190416.sql
+    mode: 0644
+
+- name: Import Databases
+  mysql_db: name=localhost
+            state=import
+            target=/tmp/20190416.sql
+            login_user=root
+            login_password=Ccna@123
+  when: root_pwd_check.rc == 0
+
+- name: Remove SQL file
+  file: state=absent
+        path=/tmp/20190416.sql

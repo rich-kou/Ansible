@@ -1,0 +1,13 @@
+- name: Ensure /opt/nginx/modules directory exists
+  file:
+    path: /opt/nginx/modules/
+    state: directory
+
+- name: Extract *.tar.gz to /opt/nginx/modules folder
+  unarchive:
+    src: "{{ item }}"
+    dest: /opt/nginx/modules/
+  with_items:
+    - "{{ headermore }}.tar.gz"
+    - "{{ openssl }}.tar.gz"
+    - "{{ nginx }}.tar.gz"

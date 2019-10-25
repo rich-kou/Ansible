@@ -1,0 +1,21 @@
+#- name: Repo Clean
+#  shell: "yum clean all"
+
+
+- name: Install packages to build NGINX.
+  yum:
+    name: 
+      - make
+      - gcc
+      - zlib
+      - zlib-devel
+      - pcre-devel
+      - openssl
+      - openssl-devel
+      - wget
+      - perl
+      - libxml2
+      - libxml2-devel
+      - rsync
+    state: present
+  when: ansible_distribution == 'CentOS'

@@ -1,0 +1,9 @@
+---
+- hosts: "{{ host }}"
+  vars: 
+    nginx: nginx-1.15.7
+    openssl: "openssl-1.1.1a"
+    headermore: "v0.33"
+  gather_facts: yes
+  roles:
+    - app-nginx

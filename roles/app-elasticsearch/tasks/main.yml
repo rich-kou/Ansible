@@ -1,0 +1,27 @@
+---
+- name: "yum clean all"
+  shell: "yum clean all"
+
+- name: install java
+  yum:
+    name: java
+    state: present
+
+- name:  "Install ElasticSearch Lastest"
+  yum:
+    name: elasticsearch
+    state: present
+
+#- name: Copy Filebeat Setting
+#  copy:
+#    src: filebeat.yml
+#    dest: /etc/filebeat/filebeat.yml
+#    mode: 0600
+#    owner: root
+#    group: root
+
+- name: "ElasticSearch Enable"
+  systemd:
+    name: elasticsearch
+    enabled: yes
+    state: restarted

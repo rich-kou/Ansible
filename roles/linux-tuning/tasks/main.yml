@@ -1,0 +1,30 @@
+---
+- name: setting user level open file limit = 1048576
+  copy:
+    src: limits.conf
+    dest: /etc/security/limits.conf
+    mode: 0644
+
+#- name: Copy rc.local
+#  copy:
+#    src: rc.local
+#    dest: /etc/rc.d/rc.local
+#    mode: 0755
+
+#- name: Run Never
+#  shell: "echo never > /sys/kernel/mm/transparent_hugepage/enabled"
+
+#- name: Run Never
+#  shell: "echo never > /sys/kernel/mm/transparent_hugepage/defrag"
+
+- name: setting sysctl
+  copy:
+    src: sysctl.conf
+    dest: /etc/sysctl.conf
+    mode: 0644
+
+- name: run sysctl
+  shell: "sysctl -p"
+
+- name: make sure sysctl (CentOS 7)
+  shell: "sed -i 's/vm.swappiness = 30/vm.swappiness = 0/g' /usr/lib/tuned/virtual-guest/tuned.conf"

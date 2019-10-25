@@ -1,0 +1,6 @@
+---
+- hosts: "{{ host }}"
+  roles:
+#    - node_exporter
+#    - common-linux-tuning
+    - app-openssl

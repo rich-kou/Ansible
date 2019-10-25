@@ -1,0 +1,41 @@
+---
+- name: COPY node_exporter
+  copy:
+    src: node_exporter
+    dest: /usr/sbin/node_exporter
+    owner: root
+    group: root
+    mode: 0775
+
+- name: COPY node_exporter.service
+  copy:
+    src: node_exporter.service
+    dest: /lib/systemd/system/node_exporter.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: COPY node_exporter.conf
+  copy:
+    src: node_exporter.conf
+    dest: /etc/node_exporter.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: REMOVE old node_exporter.service
+  file:
+    path: /etc/systemd/system/node_exporter.service
+    state: absent
+
+- name: REMOVE old node_exporter.service
+  file:
+    path: /usr/bin/node_exporter
+    state: absent
+
+- name: Restart and Enable node_exporter.service
+  systemd:
+    name: node_exporter
+    daemon_reload: yes
+    enabled: yes
+    state: restarted

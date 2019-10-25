@@ -1,0 +1,4 @@
+[cq9]
+192.168.1.121 ansible_python_interpreter=python3 #[CYK8SM]
+192.168.1.111 ansible_python_interpreter=python3 #[DBK8SM]
+192.168.1.101 ansible_python_interpreter=python3 #[LUIS]

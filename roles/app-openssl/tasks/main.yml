@@ -1,0 +1,44 @@
+---
+- name: Install packages required to build
+  yum: "name={{ item }} state=present"
+  with_items:
+    - zlib-devel
+
+- name: COPY openssl-1.1.1.tar.gz
+  copy:
+    src: openssl-1.1.1.tar.gz
+    dest: /tmp/openssl-1.1.1.tar.gz
+
+- name: Extract NGINX
+  unarchive:
+    src: /tmp/openssl-1.1.1.tar.gz
+    dest: /opt/
+    copy: no
+
+
+#- name: Build Ruby.
+#  command: >
+#    {{ item }}
+#    chdir=/tmp/openssl-1.1.1/
+#    creates=/usr/sbin/nginx
+#  with_items:
+#    - sh ./config shared zlib
+#    - make
+#    - make install
+#    - mv /usr/bin/openssl /usr/bin/openssl.bak
+#    - ln -s /usr/local/bin/openssl /usr/bin/openssl
+#    - echo "/usr/local/ssl/lib" >> /etc/ld.so.conf
+#    - ldconfig -v
+
+
+#- name: rm default
+#  shell: "rm -rf /etc/nginx/*.default"
+#- name: Remove Files
+#  file:
+#    path: /tmp/openssl-1.1.1.tar.gz
+#    state: absent
+
+#- name: Remove Dir
+#  file:
+#    path: /tmp/openssl-1.1.1
+#    state: absent

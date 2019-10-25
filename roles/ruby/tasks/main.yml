@@ -1,0 +1,57 @@
+---
+- name: Install packages required to build Ruby.
+  yum: "name={{ item }} state=present"
+  with_items:
+    - make
+    - gcc
+    - wget
+    - zlib-devel
+    - openssl
+  when: ansible_os_family == 'RedHat'
+
+- name: Download Ruby.
+  copy:
+    src: ruby-2.5.0.tar.gz
+    dest: /tmp/ruby-2.5.0.tar.gz
+
+- name: Extract Ruby.
+  unarchive:
+    src: /tmp/ruby-2.5.0.tar.gz
+    dest: /tmp/
+    copy: no
+
+- name: Build Ruby.
+  command: >
+    {{ item }}
+    chdir=/tmp/ruby-2.5.0/
+    creates=/usr/local/bin/ruby
+  with_items:
+    - ./configure --enable-shard
+    - make
+    - make install
+
+- name: gem install redis-4.0.1
+  copy:
+    src: redis-4.0.1.gem
+    dest: /tmp/
+
+- name: gem install
+  gem:
+    name: redis
+    gem_source: /tmp/redis-4.0.1.gem
+    state: present
+
+- name: clean
+  file:
+    dest: /tmp/redis-4.0.1.gem
+    state: absent
+
+- name: clean
+  file:
+    dest: /tmp/ruby-2.5.0.tar.gz
+    state: absent
+
+- name: cleam
+  file:
+    dest: /tmp/ruby-2.5.0
+    state: absent

@@ -1,0 +1,79 @@
+---
+- name: "yum clean all"
+  shell: "yum clean all"
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+#- name:  "Remove FileBeat"
+#  yum:
+#    name: filebeat
+#    state: absent 
+#  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+#- name:  "Remove FileBeat"
+#  apt:
+#    name: filebeat
+#    state: absent 
+#  when: ansible_distribution == 'Ubuntu'
+
+- name:  "Install FileBeat-6.5.3 at CentOS"
+  yum:
+    name: filebeat-6.5.3-1.x86_64
+    state: present
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name:  "Install FileBeat-6.5.3 at Ubuntu"
+  apt:
+    deb: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.5.3-amd64.deb
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Enable System Module
+  shell: "/usr/bin/filebeat modules enable system"
+
+- name: Enable Nginx Module
+  shell: "/usr/bin/filebeat modules enable nginx"
+
+- name: Copy ES_USER
+  copy:
+    src: ES_USER
+    dest: /root/ES_USER
+    mode: 0600
+    owner: root
+    group: root
+
+- name: Copy ES_PWD
+  copy:
+    src: ES_PWD
+    dest: /root/ES_PWD
+    mode: 0600
+    owner: root
+    group: root
+
+- name: Set ES_USER
+  shell: "cat /root/ES_USER | /usr/bin/filebeat keystore add ES_USER --stdin --force"
+
+- name: Set ES_PWD
+  shell: "cat /root/ES_PWD | /usr/bin/filebeat keystore add ES_PWD --stdin --force"
+
+- name: Delete ES_USER
+  file:
+    path: /root/ES_USER
+    state: absent
+
+- name: Delete ES_PWD
+  file:
+    path: /root/ES_PWD
+    state: absent
+
+- name: Copy Filebeat Setting
+  copy:
+    src: filebeat.yml
+    dest: /etc/filebeat/filebeat.yml
+    mode: 0600
+    owner: root
+    group: root
+
+- name: "Filebeat Enable"
+  systemd:
+   name: filebeat
+   state: restarted
+   enabled: yes

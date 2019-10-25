@@ -1,0 +1,40 @@
+# Filebeat inputs
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /var/log/*.log
+  ignore_older: 24h
+
+# Filebeat modules
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+# ElasticSearch template setting
+setup.template.settings:
+  index.number_of_shards: 3
+
+# Kibana
+setup.kibana:
+  host: "http://210.17.103.228:5601"
+
+# ElasticSearch
+output.elasticsearch:
+  hosts:
+     - "http://elastic.cqcp.corp:80"
+  username: "${ES_USER}"
+  password: "${ES_PWD}"
+
+# Enable xpack.monitoring
+xpack.monitoring:
+  enabled: true
+#  indices:
+#    - index: "init-access-%{+yyyy.MM.dd}"
+#      when.equals:
+#        fileset.module: "nginx"
+#        fileset.name: "access"
+ #   - index: "init-error-%{+yyyy.MM.dd}"
+ #     when.equals:
+ #       fileset.module: "nginx"
+ #       fileset.name: "error"

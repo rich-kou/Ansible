@@ -1,0 +1,21 @@
+---
+- name: "Install FileBeat 6.3.1"
+  apt:
+    deb: http://10.36.95.240/filebeat-6.3.1-amd64.deb
+
+- name: "Enable System Module"
+  shell: "/usr/bin/filebeat modules enable system"
+
+- name: "Copy Setting"
+  copy:
+    src: filebeat.yml
+    dest: /etc/filebeat/filebeat.yml
+    mode: 0600
+    owner: root
+    group: root
+
+- name: "Enable Filebeat"
+  systemd:
+    name: filebeat
+    enabled: yes
+    state: started

@@ -1,0 +1,9 @@
+---
+- name: Copy Repo file
+  copy:
+    src: CQCP.repo
+    dest: /etc/yum.repos.d/CQCP.repo
+    mode: 0644
+
+- name: Run yum clean all
+  shell: "yum clean all"

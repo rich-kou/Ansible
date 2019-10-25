@@ -1,0 +1,24 @@
+---
+- name: Copy Apache conf file
+  copy:
+    src: httpd.conf
+    dest: /etc/httpd/conf/httpd.conf
+    mode: 0644
+
+- name: Copy PHP conf file   
+  copy:
+    src: php.ini
+    dest: /etc/php.ini
+    mode: 0644
+
+- name: start and enable Apache
+  systemd:
+    name: httpd
+    enabled: yes
+    state: started
+
+- name: start and enable MariaDB
+  systemd:
+    name: mariadb
+    enabled: yes
+    state: started
